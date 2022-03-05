@@ -6,6 +6,13 @@ import Login from './components/Login/Login';
 import MainContentAdmin from './components/MainContentAdmin';
 import RouterHeader from './components/RouterHeader';
 
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+import AnnounceCreate from './components/routes/AnnounceCreate';
+
 const setToken = (userToken) => {
   sessionStorage.setItem('token', JSON.stringify(userToken))
 }
@@ -29,10 +36,10 @@ function App() {
   return (
     <div className="App">
       <AdminNavbar />
-
-      <RouterHeader name="Dashboard" />
-      <MainContentAdmin />
-      {/* <PanelComp /> */}
+      <Routes>
+        <Route path='/' element={<MainContentAdmin />} />
+        <Route path='/createAnnouncement' element={<AnnounceCreate />} />
+      </Routes>
     </div>
   );
 }

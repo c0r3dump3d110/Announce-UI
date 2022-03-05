@@ -1,37 +1,87 @@
-import React, { useState } from 'react'
+import axios from 'axios';
+import React, { useRef, useState } from 'react'
 import axiosFetcher from '../../Fetchers/axiosFetcher';
+import ComboBoxes from '../FormsComps/ComboBoxes';
 import SimpleInput from '../FormsComps/SimpleInput';
+
+
+// {
+//     "Token" : "1555",
+//     "dateDebut":"2021-2-12",
+//     "dateFin":"2021-2-12",
+//     "sites":[1],
+//     "Titre":"First",
+//     "url":"test",
+//     "Description":"TEEEEEEEEEEEEEEEEEEEEEEEEEEEEST"
+// }
+
 
 export default function CreateAnnonce() {
 
-    const [lien, setLien] = useState("");
-    const [about, setAbout] = useState("");
-    const [image, setImage] = useState("");
-    const [datevalid, setDatevalid] = useState(false);
 
-    const formData = new FormData();
-    const submitAnnonce = (e) => {
-        e.preventDefault();
+    const [sitesData, setSitesData] = useState([]);
 
-        formData.append('Lien', lien);
-        formData.append('about', about);
-        formData.append('image', image);
-
-        //console.log(formData); 
-
-        // axiosFetcher.post('/annonce', {
-        //     data: formData,
-        // }).then(res => {
-        //     console.log(res.data); 
-        // }).catch(err => {
-        //     console.log(err); 
-        // })
-
-
-
+    const eventHandler = data => {
+        setSitesData(data);
     }
 
 
+    const [sitestoshow, setSitesToShow] = useState([]);
+
+    const [dateDebut, setDateDebut] = useState("");
+    const [dateFin, setDateFin] = useState("");
+    const [title, setTitle] = useState("");
+
+    //cloudinary 
+    const [image, setImage] = useState("");
+    //
+
+    const [description, setDescription] = useState("");
+
+    const [datevalid, setDatevalid] = useState(false);
+
+    const cloudName = "drmmqpbsw";
+    const cloudinaryLink = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+
+
+    const submitAnnonce = async (e) => {
+        e.preventDefault();
+        const formData2 = new FormData();
+
+        formData2.append('file', image);
+        formData2.append('upload_preset', 'bn1v0kfl');
+
+        //---------------
+
+        axios.post(cloudinaryLink, formData2)
+            .then(resp => {
+                if (resp.data.url) {
+                    const formData = new FormData();
+
+                    formData.append('dateDebut', dateDebut);
+                    formData.append('dateFin', dateFin);
+                    formData.append('sites', sitesData);
+                    formData.append('Token', sessionStorage.getItem('token'))
+                    formData.append('Titre', title);
+                    formData.append('Description', description);
+                    formData.append('url', resp.data.url);
+
+                    axiosFetcher.post('/annonces', formData)
+                    .then(res => {
+                        console.log(res); 
+                    }).catch(err => {
+                        console.log(err); 
+                    })
+
+                    //console.log([...formData]);
+                } else {
+                    console.log("there is an error on inserting the image in cloudinary");
+                }
+            })
+
+        //---------------
+
+    }
 
 
     return (
@@ -61,7 +111,7 @@ export default function CreateAnnonce() {
                                         name="title-anno"
                                         id="title-anno"
                                         onChange={e => {
-                                            console.log(e.target.value)
+                                            setTitle(e.target.value);
                                         }}
                                     />
                                     {/* </div> */}
@@ -75,7 +125,7 @@ export default function CreateAnnonce() {
                                     id="start-date"
                                     type="date"
                                     onChange={e => {
-                                        console.log(e.target.value)
+                                        setDateDebut(e.target.value);
                                     }}
                                 />
                                 <SimpleInput
@@ -84,14 +134,14 @@ export default function CreateAnnonce() {
                                     id="end-date"
                                     type="date"
                                     onChange={e => {
-                                        console.log(e.target.value)
+                                        setDateFin(e.target.value);
                                     }}
                                 />
 
 
                             </div>
                             <p className="mt-2 text-sm text-red-500">
-                                {!datevalid ? "Dates are fault": ""}
+                                {!datevalid ? "Dates are fault" : ""}
                             </p>
                             <div>
                                 <label htmlFor="about" className="block text-sm font-medium text-gray-700">
@@ -99,15 +149,15 @@ export default function CreateAnnonce() {
                                 </label>
                                 <div className="mt-1">
                                     <textarea
-                                        id="about"
-                                        name="about"
+                                        id="description"
+                                        name="description"
                                         rows={3}
                                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
                                         placeholder="Describe"
                                         defaultValue={''}
 
                                         onChange={e => {
-                                            setAbout(e.target.value);
+                                            setDescription(e.target.value);
                                         }}
                                     />
                                 </div>
@@ -116,7 +166,7 @@ export default function CreateAnnonce() {
                                 </p>
                             </div>
 
-
+                            <ComboBoxes onChange={eventHandler} />
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">Cover photo</label>
@@ -163,7 +213,7 @@ export default function CreateAnnonce() {
                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                             <button
                                 type="submit"
-                                onSubmit={submitAnnonce}
+                                onClick={submitAnnonce}
                                 className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
                                 Save

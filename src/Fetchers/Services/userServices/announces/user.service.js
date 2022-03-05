@@ -10,7 +10,7 @@ class UserService {
     addAnnounce({announceObject}) {
         return axiosFetcher.post('/addannonce' + 'user', 
             {
-                headers: authHeader(),
+                token: authHeader(),
                 data: announceObject,
             }
         ).then(res => {
