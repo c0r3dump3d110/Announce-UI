@@ -1,23 +1,38 @@
-import logo from './logo.svg';
+
 import './App.css';
+import PanelComp from './components/PanelComp';
+import AdminNavbar from './components/AdminNavbar'
+import Login from './components/Login/Login';
+import MainContentAdmin from './components/MainContentAdmin';
+import RouterHeader from './components/RouterHeader';
+
+const setToken = (userToken) => {
+  sessionStorage.setItem('token', JSON.stringify(userToken))
+}
+
+const getToken = () => {
+  sessionStorage.getItem('token');
+}
 
 function App() {
+
+  const token = getToken();
+
+
+  // if (!token)
+  //   return (
+  //     <div className='App'>
+  //       <Login setToken={setToken} />
+  //     </div>
+  //   )
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <AdminNavbar />
+
+      <RouterHeader name="Dashboard" />
+      <MainContentAdmin />
+      {/* <PanelComp /> */}
     </div>
   );
 }
