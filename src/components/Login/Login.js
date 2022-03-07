@@ -2,33 +2,33 @@ import React, { useState } from 'react'
 import axiosFetcher from '../../Fetchers/axiosFetcher';
 import PropTypes from 'prop-types';
 import { LockClosedIcon } from '@heroicons/react/outline';
+import axios from 'axios';
 
 export default function Login({setToken}) {
 
-    const [email, setEmail] = useState("");
+    const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
-    
-    const onSubmitForm = (e) => {
+
+    const onSubmitForm = async (e) => {
         e.preventDefault();
 
+        const reque = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                login: login,
+                password: password
+            })
+        }
 
-        // const formData = new FormData(); 
-        // formData.append('email', email); 
-        // formData.append('password', password); 
-
-        axiosFetcher.post('/login', {
-            email: email,
-            password: password
-        }).then((res) => {
-            console.log(res);
-            // if token recived correctly 
-          //  res.token ? setToken(res.token) : ""; 
-
-
-
-        }).catch(err => {
-            console.log(err);
-        })
+        const resp = await fetch('http://0.0.0.0:8080/SMART_WALK-1.0-SNAPSHOT/auth', reque)
+        const data = await resp.json(); 
+        console.log(data)
+        localStorage.setItem('organisation', JSON.stringify(data.organisation)); 
+        localStorage.setItem('token', JSON.stringify(data.token))
+        setToken(data.token); 
     }
 
     return (
@@ -42,31 +42,26 @@ export default function Login({setToken}) {
                             alt="Workflow"
                         />
                         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
-                        <p className="mt-2 text-center text-sm text-gray-600">
-                            Or{' '}
-                            <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                                start your 14-day free trial
-                            </a>
-                        </p>
+
                     </div>
                     <form className="mt-8 space-y-6" action="#" method="POST">
                         <input type="hidden" name="remember" defaultValue="true" />
                         <div className="rounded-md shadow-sm -space-y-px">
                             <div>
-                                <label htmlFor="email-address" className="sr-only">
-                                    Email address
+                                <label htmlFor="login" className="sr-only">
+                                    Login
                                 </label>
                                 <input
-                                    id="email-address"
-                                    name="email"
-                                    type="email"
-                                    autoComplete="email"
+                                    id="login"
+                                    name="login"
+                                    type="login"
+                                    autoComplete="login"
                                     required
                                     className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                                    placeholder="Email address"
+                                    placeholder="Login"
 
                                     onChange={e => {
-                                        setEmail(e.target.value);
+                                        setLogin(e.target.value);
                                     }}
                                 />
                             </div>
@@ -124,6 +119,12 @@ export default function Login({setToken}) {
                             </button>
                         </div>
                     </form>
+                    <p className="mt-2 text-center text-sm text-gray-600">
+                        Or{' '}
+                        <a href="/Register" className="font-medium text-indigo-600 hover:text-indigo-500">
+                            Register if you don't have an account
+                        </a>
+                    </p>
                 </div>
             </div>
         </>

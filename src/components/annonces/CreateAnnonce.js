@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import axiosFetcher from '../../Fetchers/axiosFetcher';
 import ComboBoxes from '../FormsComps/ComboBoxes';
 import SimpleInput from '../FormsComps/SimpleInput';
@@ -27,6 +27,10 @@ export default function CreateAnnonce() {
 
 
     const [sitestoshow, setSitesToShow] = useState([]);
+
+
+
+    // here I need to call the ids of sites from backend depending on the organisation 
 
     const [dateDebut, setDateDebut] = useState("");
     const [dateFin, setDateFin] = useState("");
@@ -58,6 +62,7 @@ export default function CreateAnnonce() {
                 if (resp.data.url) {
                     const formData = new FormData();
 
+                    formData.append('Token', localStorage.getItem('token'))
                     formData.append('dateDebut', dateDebut);
                     formData.append('dateFin', dateFin);
                     formData.append('sites', sitesData);

@@ -1,11 +1,15 @@
 [
     {
-        "name": "Casablanca AIN SEBAA", 
-        "dataCreation": "15-06-2000", 
-        "photo": "", 
+        "name": "Casablanca AIN SEBAA",
+        "dataCreation": "15-06-2000",
+        "photo": "",
         "GeoPoint": {
-            "Longitude": "12.32412", 
-            "Latitude": "53.234232" 
+            "Longitude": "12.32412",
+            "Latitude": "53.234232"
         }
     }
 ]
+
+
+
+

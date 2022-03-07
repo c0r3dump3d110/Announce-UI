@@ -1,7 +1,17 @@
-{
+[{
     "name": "Decathlon", 
     "dateCreation": "12-08-1999", 
     "email": "decathlon.99@decathlon.ma", 
     "phone-number": "01923123123",
     "photoProfile": ""
-}
+},
+
+
+{
+    "name": "Decathlon", 
+    "email": "test@adf.com", 
+    "login": "decathlon", 
+    "password": "hello", 
+    "creationDate": "20-01-2018", 
+    "type" : "1"
+}]

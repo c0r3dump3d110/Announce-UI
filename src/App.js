@@ -12,26 +12,36 @@ import {
   Route,
 } from "react-router-dom";
 import AnnounceCreate from './components/routes/AnnounceCreate';
+import RegisterPage from './components/routes/RegisterPage';
+import AnnouncmentsPage from './components/routes/AnnouncmentsPage';
+import SiteCreations from './components/routes/SiteCreations';
+import { useEffect, useState } from 'react';
 
 const setToken = (userToken) => {
-  sessionStorage.setItem('token', JSON.stringify(userToken))
+  localStorage.setItem('token', JSON.stringify(userToken))
 }
 
 const getToken = () => {
-  sessionStorage.getItem('token');
+  return localStorage.getItem('token');
 }
 
 function App() {
 
-  const token = getToken();
+  const token = getToken(); 
 
+  if (!token) {
+    return (
+      <div className='App'>
 
-  // if (!token)
-  //   return (
-  //     <div className='App'>
-  //       <Login setToken={setToken} />
-  //     </div>
-  //   )
+        <Routes>
+          <Route path='/' element={<Login setToken={setToken} />} />
+          <Route path='/Register' element={<RegisterPage />} />
+        </Routes>
+
+      </div>
+    )
+  }
+
 
   return (
     <div className="App">
@@ -39,6 +49,8 @@ function App() {
       <Routes>
         <Route path='/' element={<MainContentAdmin />} />
         <Route path='/createAnnouncement' element={<AnnounceCreate />} />
+        <Route path='/Announcments' element={<AnnouncmentsPage />} />
+        <Route path='/createSite' element={<SiteCreations />} />
       </Routes>
     </div>
   );

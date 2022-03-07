@@ -18,7 +18,7 @@ const navigation = [
     { name: 'Home', href: '/', current: true },
     { name: 'New Announcment', href: '/createAnnouncement', current: false },
     { name: 'New Site', href: '/createSite', current: false },
-    { name: 'Announcements', href: '#', current: false },
+    { name: 'Announcements', href: '/Announcments', current: false },
     { name: 'Reports', href: '#', current: false },
 ]
 
