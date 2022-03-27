@@ -1,4 +1,5 @@
 import React, { useEffect, useImperativeHandle, useState } from 'react'
+import axiosFetcher from '../../Fetchers/axiosFetcher';
 
 const Legend = "By Email";
 
@@ -12,13 +13,28 @@ const Sites = [
 export default function ComboBoxes(props) {
 
   const [sites, setSites] = useState([]);
-
+  const [sitesData, setSitesData] = useState([]); 
   useEffect(() => {
-    if(props.onChange){
+    if (props.onChange) {
       props.onChange(sites)
     }
   }, [sites])
- 
+
+  useEffect(() => {
+    // here I need to call the ids of sites from backend depending on the organisation 
+
+    async function fetchSites() {
+      const request = await axiosFetcher.options('/sites', {
+        Token: localStorage.getItem('token'),
+        id_organisation: JSON.parse(localStorage.getItem('organisation')).id
+      })
+
+      setSitesData(request.data)
+    }
+
+    fetchSites(); 
+  }, [])
+
 
   return (
     <fieldset>
@@ -37,19 +53,19 @@ export default function ComboBoxes(props) {
                 type="checkbox"
                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                 onChange={(e) => {
-                  if(e.target.checked) {
+                  if (e.target.checked) {
                     if (!sites.includes(site.id)) {
                       setSites([...sites, site.id]);
                     }
                   } else {
                     var inde = sites.indexOf(site.id);
-                    if(inde > -1){
-                      sites.splice(inde, 1); 
+                    if (inde > -1) {
+                      sites.splice(inde, 1);
                     }
                   }
                 }}
 
-                
+
               />
             </div>
             <div className="ml-3 text-sm">

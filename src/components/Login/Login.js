@@ -3,8 +3,9 @@ import axiosFetcher from '../../Fetchers/axiosFetcher';
 import PropTypes from 'prop-types';
 import { LockClosedIcon } from '@heroicons/react/outline';
 import axios from 'axios';
+import { toast } from 'wc-toast';
 
-export default function Login({setToken}) {
+export default function Login({ setToken }) {
 
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
@@ -23,16 +24,35 @@ export default function Login({setToken}) {
             })
         }
 
-        const resp = await fetch('http://0.0.0.0:8080/SMART_WALK-1.0-SNAPSHOT/auth', reque)
-        const data = await resp.json(); 
-        console.log(data)
-        localStorage.setItem('organisation', JSON.stringify(data.organisation)); 
-        localStorage.setItem('token', JSON.stringify(data.token))
-        setToken(data.token); 
+
+        const resp = await fetch(process.env.REACT_APP_API_URL + '/auth', reque)
+        const data = await resp.json();
+
+        if (data.organisation && data.token) {
+            localStorage.setItem('organisation', JSON.stringify(data.organisation));
+            localStorage.setItem('token', JSON.stringify(data.token))
+            setToken(data.token);
+
+            toast.success("Auth succeed"); 
+           
+            window.location.reload();
+
+
+        } else if (data.error) {
+            document.getElementById("cust-form").reset();
+            toast.error(data.error); 
+           
+            setLogin(null);
+            setPassword(null);
+        }
+
+
     }
+
 
     return (
         <>
+            <wc-toast></wc-toast>
             <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-md w-full space-y-8">
                     <div>
@@ -44,7 +64,7 @@ export default function Login({setToken}) {
                         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
 
                     </div>
-                    <form className="mt-8 space-y-6" action="#" method="POST">
+                    <form className="mt-8 space-y-6" action="#" method="POST" id="cust-form">
                         <input type="hidden" name="remember" defaultValue="true" />
                         <div className="rounded-md shadow-sm -space-y-px">
                             <div>
@@ -84,26 +104,6 @@ export default function Login({setToken}) {
                                 />
                             </div>
                         </div>
-
-                        {/* <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                                <input
-                                    id="remember-me"
-                                    name="remember-me"
-                                    type="checkbox"
-                                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                                />
-                                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                                    Remember me
-                                </label>
-                            </div>
-
-                            <div className="text-sm">
-                                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                                    Forgot your password?
-                                </a>
-                            </div>
-                        </div> */}
 
                         <div>
                             <button
