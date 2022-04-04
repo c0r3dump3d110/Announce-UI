@@ -13,7 +13,7 @@ export default function AdminNav() {
     const navigation = [
         { name: 'Home', href: '/', current: true },
         { name: 'Announcements', href: '/Announcments', current: false },
-        { name: 'Sites', href: '#', current: false },
+        { name: 'Sites', href: '/sites', current: false },
         { name: 'New Announcment', href: '/createAnnouncement', current: false },
         { name: 'New Site', href: '/createSite', current: false }
     ]

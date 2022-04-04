@@ -16,6 +16,7 @@ import RegisterPage from './components/routes/RegisterPage';
 import SiteCreations from './components/routes/SiteCreations';
 import React, { Suspense, useEffect, useState } from 'react';
 import AdminNav from './components/AdminNav';
+import SitesPage from './components/routes/SitesPage';
 
 
 const AnnouncmentsPage = React.lazy(() => import('./components/routes/AnnouncmentsPage'))
@@ -52,6 +53,7 @@ function App() {
       <Routes>
         <Route path='/' element={<MainContentAdmin />} />
         <Route path='/createAnnouncement' element={<AnnounceCreate />} />
+        <Route path='/sites' element={<SitesPage />} />
         <Route path='/Announcments' element={
           <Suspense fallback={<div>Loading ..</div>}>
             <AnnouncmentsPage />

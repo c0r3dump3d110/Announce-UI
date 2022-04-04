@@ -1,16 +1,48 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import { toast } from 'wc-toast';
+import axiosFetcher from '../../Fetchers/axiosFetcher';
+import RouterHeader from '../RouterHeader';
+
+const headers = [
+    "name", "Created date", "Longitude", "Latitude"
+]
 
 export default function SitesPage() {
 
-    const [sites, setSites] = useState([])
+    const [sites, setSites] = useState([]); 
+    var data = JSON.stringify({
+        Token: JSON.parse(localStorage.getItem('token')), 
+        id_organisation: JSON.parse(localStorage.getItem('organisation')).id
+    }); 
 
-    useEffect({
-        c
+    var config = {
+        method: 'options', 
+        url: process.env.REACT_APP_API_URL+'/sites', 
+        headers: {
+            'Content-Type': 'application/json'
+        }, 
+        data: data
+    }; 
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await axios(config).
+                then(res => {
+                    console.log(res.data);
+                    if(res.data.length === 0){
+                        toast.error("No data to show for your organisation ")
+                    } else {
+                        setSites(res.data)
+                    }
+                })
+        }
+        fetchData(); 
     }, [setSites])
     return (
         <>
             <wc-toast></wc-toast>
-            <RouterHeader name="Manage announcements" />
+            <RouterHeader name="Manage Sites" />
             <main>
                 <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
                     <div className="px-4 py-6 sm:px-0">
@@ -45,8 +77,8 @@ export default function SitesPage() {
                                 </thead>
                                 <tbody>
                                     {
-                                        announcements.length > 0 ?
-                                            announcements.map((anno) => (
+                                        sites.length > 0 ?
+                                            sites.map((anno) => (
                                                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                                     <td class="w-4 p-4">
                                                         <div class="flex items-center">
@@ -55,24 +87,22 @@ export default function SitesPage() {
                                                         </div>
                                                     </td>
                                                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                                        <img style={{ width: "50px" }} src={anno.urlPrincipalImage} />
+                                                        {anno.Name}
                                                     </th>
                                                     <td class="px-6 py-4">
-                                                        {anno.dateDebut}
+                                                        {anno.dateCreated}
                                                     </td>
                                                     <td class="px-6 py-4">
-                                                        {anno.dateFin}
+                                                        {anno.localisation.longtitude}
                                                     </td>
                                                     <td class="px-6 py-4">
-                                                        {anno.titre}
+                                                        {anno.localisation.laltittude}
                                                     </td>
-                                                    <td class="px-6 py-4">
-                                                        {anno.description}
-                                                    </td>
-                                                    <td class="px-6 py-4 text-right">
+                                                    
+                                                    {/* <td class="px-6 py-4 text-right">
                                                         <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                                                         <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline"> Delete</a>
-                                                    </td>
+                                                    </td> */}
                                                 </tr>
                                             )) : <></>
                                     }

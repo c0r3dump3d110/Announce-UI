@@ -11,7 +11,6 @@ export default function MyModal(props) {
           as="div"
           className="fixed inset-0 z-10 overflow-y-auto"
           onClose={props.closeModal}
-          style={{backgroundColor: "#0E9F6E"}}
         >
           <div className="min-h-screen px-4 text-center">
             <Transition.Child

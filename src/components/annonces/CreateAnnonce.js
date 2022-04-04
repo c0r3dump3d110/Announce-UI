@@ -5,9 +5,15 @@ import axiosFetcher from '../../Fetchers/axiosFetcher';
 import ComboBoxes from '../FormsComps/ComboBoxes';
 import SimpleInput from '../FormsComps/SimpleInput';
 
+const categories = [
+    'Informatique', 'Vetement', 'Electronics', 'Aliments', 'Sports'
+]
+
 export default function CreateAnnonce() {
 
     const [sitesData, setSitesData] = useState([]);
+    const [anno_cat, setAnnonceCategorie] = useState(null);
+
 
     const [clicked, setClicked] = useState(false);
 
@@ -35,7 +41,6 @@ export default function CreateAnnonce() {
 
     }, [dateDebut, dateFin])
 
-
     const submitAnnonce = async (e) => {
         e.preventDefault();
 
@@ -44,7 +49,8 @@ export default function CreateAnnonce() {
             title &&
             image &&
             description &&
-            datevalid) {
+            datevalid &&
+            anno_cat) {
 
 
             if (datevalid) {
@@ -58,7 +64,7 @@ export default function CreateAnnonce() {
                 axios.post(cloudinaryLink, formData2)
                     .then(resp => {
                         if (resp.data.url) {
-                            console.log(resp.data.url)
+                            console.log({sites: sitesData})
                             axiosFetcher.post('/annonces', {
                                 id: JSON.parse(localStorage.getItem('organisation')).id,
                                 Token: JSON.parse(localStorage.getItem('token')),
@@ -67,6 +73,7 @@ export default function CreateAnnonce() {
                                 sites: sitesData,
                                 Titre: title,
                                 Description: description,
+                                id_cat: anno_cat,
                                 url: resp.data.url
                             })
                                 .then(res => {
@@ -112,11 +119,6 @@ export default function CreateAnnonce() {
                             <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                                 <div className="grid grid-cols-3 gap-6">
                                     <div className="col-span-3 sm:col-span-2">
-
-                                        {/* <div className="mt-1 flex rounded-md shadow-sm">
-                                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-                                            Title
-                                        </span> */}
                                         <SimpleInput
                                             type="text"
                                             label="Title of announcement"
@@ -126,7 +128,6 @@ export default function CreateAnnonce() {
                                                 setTitle(e.target.value);
                                             }}
                                         />
-                                        {/* </div> */}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-6 gap-6">
@@ -180,6 +181,35 @@ export default function CreateAnnonce() {
 
                                 <ComboBoxes onChange={eventHandler} />
 
+                                <div class="mt-4 space-y-4">
+                                    <label htmlFor="about" className="block text-sm font-medium text-gray-700">
+                                        Categorie
+                                    </label>
+                                    <div>
+                                        {
+                                            categories.map((cat, key) => (
+                                                <div class="form-check">
+                                                    <input
+                                                        className="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                                        type="radio"
+                                                        name="flexRadios"
+                                                        id={key}
+                                                        value={key + 1}
+                                                        onChange={e => {
+                                                            e.target.checked && setAnnonceCategorie(e.target.value);
+                                                            console.log(anno_cat);
+                                                        }}
+                                                    />
+                                                    <label
+                                                        className="form-check-label inline-block text-gray-800"
+                                                        for={key + 1}>
+                                                        {cat}
+                                                    </label>
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">Cover photo</label>
                                     <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
@@ -226,8 +256,8 @@ export default function CreateAnnonce() {
                                 <button
                                     type="submit"
                                     onClick={(e) => {
-                                            submitAnnonce(e)
-                                        }
+                                        submitAnnonce(e)
+                                    }
                                     }
                                     className="bg-indigo-500 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                     disabled={clicked}
